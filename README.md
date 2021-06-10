@@ -24,7 +24,7 @@ Which is great but not aligned to my objective.
 
 # Solution
 Since I could not find what I wanted I decided to make it.  
-> Provide a collection of individual docker commands which can be combined into a single file.  
+> __Provide a collection of individual docker commands which can be combined into a single file.__  
 
 Idea similar to https://realpython.com/learning-paths/python-gui-programming/  
 1. From a list of available items  
