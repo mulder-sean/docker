@@ -13,22 +13,22 @@ All of this with my personal objective of:
 > Can I provide a self service solution that allows someone to build images with limited knowledge of docker and no hands on experience?  
 
 ## Docker Compose
-Source: https://docs.docker.com/compose/  
-My interpretation: a way to orchestrate your images to build out a functional working environment.  
+__Source__ - https://docs.docker.com/compose/  
+__My interpretation__ - a way to orchestrate your images to build out a functional working environment.  
 Which is great but not aligned to my objective.  
 
 ## Docker Multi-stage builds
-Source: https://docs.docker.com/develop/develop-images/multistage-build/  
-My interpretation: a way to coordinate build artifacts between images to maintain a slim final image.  
-Which is great but not aligned to my objective.
+__Source__ - https://docs.docker.com/develop/develop-images/multistage-build/  
+__My interpretation__ - a way to coordinate build artifacts between images to maintain a slim final image.  
+Which is great but not aligned to my objective.  
 
 # Solution
 Since I could not find what I wanted I decided to make it.  
 > Provide a collection of individual docker commands which can be combined into a single file.  
 
-To visualize the solution you can think of graphical user interface (GUI) programing.  
-Example: https://realpython.com/learning-paths/python-gui-programming/  
-Find the widget you want, drag to the docker file and click build.  
+Idea similar to https://realpython.com/learning-paths/python-gui-programming/  
+1. From a list of available items  
+1. Drop into file and build it  
 
 ## Check list
 In order to achieve my solution I have to consider:  
@@ -40,47 +40,46 @@ In order to achieve my solution I have to consider:
 * How to notify versioning changes for items  
 
 ## Decisions
-1. Language: For this I selected Python 3 to code in as I am comfortable with it, but to be fair any language could be used.  
-1. Versioning: For this I am going to use git tags.  
-1. Organize: For this I decided to use folders as some items require additional files.  
+1. __Language__ - I chose Python 3, but could have been done in any language  
+1. __Versioning__ - To reduce complication I chose GitHub tags  
+1. __Organize__ - I chose to use folders to allow for additional artifacts to be included  
 
 ## Improvements
-1. Create GUI interface to drive the idea.  
+1. Creating a GUI interface with choices to pick and choose instead of text file  
+1. Build into the script the docker commands to build and tag based on additional inputs  
+1. Continue to add common tools and possibly allow more inputs for tool versions  
 
 # Run
 To get started install the following:  
-* Python 3 - https://realpython.com/installing-python/  
-* PIP - https://pip.pypa.io/en/stable/installing/  
-* Modules: `pip install -r requirements.txt`  
+* __Python 3__ - https://realpython.com/installing-python/  
+* __PIP__ - https://pip.pypa.io/en/stable/installing/  
+* __Modules__ - `pip install -r requirements.txt`  
 
-Then
-1. Update inputs.properties file  
+Then  
+1. Update __inputs.properties__ file  
    ```  
    [image]  
-   PARENT_NAME=docker image:tag for this value  
-   SELECTED_ITEMS=comma delimited entries of the folders you want to include  
+   PARENT_NAME=image identity that will be used as base  
+   SELECTED_ITEMS=comma delimited list of items  
    ```  
 1. Execute script `python3 build-it.py`  
 1. Build docker image: `docker build build`  
 1. Test image  
-1. Cleanup containers: `docker container rm $(docker container ls --filter status=exited -q)`  
 1. Tag image  
 1. Upload to your favorite repository  
-1. Or copy contents of build folder into project and keep with code  
 
 # Result
 Now you have:  
-* A folder list of items that can be included in image  
-* An input file to select which items to include into image  
-* A simple clean two input requirement to include items to interact with  
-* Versioning of the tool based on github tags  
-* Labels in docker files to provide any documentation or notes on the install  
+* An organized folder list of items to customize with  
+* An simple input file to customize the image with  
+* The ability to create and improve while maintaining functional code with GitHub tags  
+* Labels in docker files that provide any required detail and updates to changes  
 
 What is left:  
-* All that is left is to use whatever strategy you want for storing your images  
-* Provide image to team and let them finish product specific configurations  
+* All that is left is to use whatever strategy required to label and store images  
+* Notify development teams on how to pull image and finish product specific customizations  
 * Enjoy  
 
 # Useful commands
-* Remove all containers: `docker container rm $(docker container ls --filter status=exited -q)`
-* Remove all images: `docker image rm $(docker image ls -q)`
+__Remove all containers__ `docker container rm $(docker container ls --filter status=exited -q)`  
+__Remove all images__ `docker image rm $(docker image ls -q)`  
