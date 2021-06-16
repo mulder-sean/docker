@@ -295,7 +295,10 @@ class EcrHelper:
                 if image_version > self.__application_version_current:
                     self.__application_version_current = image_version
 
-        self.__application_version_next = round(float(self.__application_version_current + 0.1), 4)
+        if self.__application_version_current == self.__application_version_base:
+            self.__application_version_next = round(float(self.__application_version_current), 4)
+        else:
+            self.__application_version_next = round(float(self.__application_version_current + 0.1), 4)
 
     def registry_prune(self):
         logging.warning(f'Cleaning up local repository')
