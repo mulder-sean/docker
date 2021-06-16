@@ -10,7 +10,7 @@ I was looking for a way to provide a docker image for development teams with the
 * Secure  
 
 All of this with my personal objective of:  
-> Can I provide a self service solution that allows someone to build images with limited knowledge of docker and no hands on experience?  
+> ***Provide a self service solution that allows someone to build images with limited knowledge of docker and no hands on experience.***  
 
 ## Docker Compose
 __Source__ - https://docs.docker.com/compose/  
@@ -22,13 +22,11 @@ __Source__ - https://docs.docker.com/develop/develop-images/multistage-build/
 __My interpretation__ - a way to coordinate build artifacts between images to maintain a slim final image.  
 Which is great but not aligned to my objective.  
 
-# Solution
+## Solution
 Since I could not find what I wanted I decided to make it.  
-> __Provide a collection of individual docker commands which can be combined into a single file.__  
-
-Idea similar to https://realpython.com/learning-paths/python-gui-programming/  
+The idea is similar to https://realpython.com/learning-paths/python-gui-programming/  
 1. From a list of available items  
-1. Drop into file and build it  
+1. Create a docker file and build it  
 
 ## Check list
 In order to achieve my solution I have to consider:  
@@ -46,7 +44,6 @@ In order to achieve my solution I have to consider:
 
 ## Improvements
 1. Creating a GUI interface with choices to pick and choose instead of text file  
-1. Build into the script the docker commands to build and tag based on additional inputs  
 1. Continue to add common tools and possibly allow more inputs for tool versions  
 
 # Run
@@ -54,19 +51,29 @@ To get started install the following:
 * __Python 3__ - https://realpython.com/installing-python/  
 * __PIP__ - https://pip.pypa.io/en/stable/installing/  
 * __Modules__ - `pip install -r requirements.txt`  
+* __Docker Environment__ - https://docs.docker.com/get-started/
+  > During writing of this I used Windows 10 WSL 2 backend with Docker Desktop 3.4.0  
+
+* __AWS Account__ - This is to create AWS Elastic Container Registry (ECR) to publish images to
+* __Boto Profile__ - https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html
 
 Then  
 1. Update __inputs.properties__ file  
-   ```  
-   [image]  
-   PARENT_NAME=image identity that will be used as base  
-   SELECTED_ITEMS=comma delimited list of items  
-   ```  
+   Example: see committed file  
+   __PARENT_NAME__ - follow the format of repository:tag  
+   __SELECTED_ITEMS__ - comma delimited list of folders to include  
+   __BUILD_DIRECTORY__ - name of folder to include docker artifacts to build from  
+   __PROFILE_NAME__ - name of the boto profile that allows you to connect to AWS  
+   __REPOSITORY_NAME__ - the name of the ECR repository to create or pull from  
+   __APPLICATION_NAME__ - the name of the image to use during upload  
+   __APPLICATTION_BASE_VERSION__ - a starting version in decimal format of [0-9].[0-9]  
+   > Note the version is auto increased based on what is already uploaded to ECR  
+
 1. Execute script `python3 build-it.py`  
-1. Build docker image: `docker build build`  
 1. Test image  
-1. Tag image  
-1. Upload to your favorite repository  
+1. Upload to ECR `python3 build-it.py --upload=true`  
+1. Check ECR for vulnerabilities  
+   * Fix any found and re-upload image  
 
 # Result
 Now you have:  
@@ -74,12 +81,11 @@ Now you have:
 * An simple input file to customize the image with  
 * The ability to create and improve while maintaining functional code with GitHub tags  
 * Labels in docker files that provide any required detail and updates to changes  
+* The ability to publish tested images into AWS ECR  
 
 What is left:  
-* All that is left is to use whatever strategy required to label and store images  
-* Notify development teams on how to pull image and finish product specific customizations  
+* Continue to include more items to install  
 * Enjoy  
 
 # Useful commands
-__Remove all containers__ `docker container rm $(docker container ls --filter status=exited -q)`  
-__Remove all images__ `docker image rm $(docker image ls -q)`  
+__Cleanup__ - `docker system prune`

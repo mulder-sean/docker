@@ -1,1 +1,5 @@
+argparse
+boto3
 configparser
+distutils
+docker
