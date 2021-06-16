@@ -23,7 +23,7 @@ __My interpretation__ - a way to coordinate build artifacts between images to ma
 Which is great but not aligned to my objective.  
 
 ## Solution
-Since I could not find what I wanted I decided to make it.  
+I could not find what I wanted I decided to make it.  
 The idea is similar to https://realpython.com/learning-paths/python-gui-programming/  
 1. From a list of available items  
 1. Create a docker file and build it  
@@ -66,7 +66,7 @@ Then
    __PROFILE_NAME__ - name of the boto profile that allows you to connect to AWS  
    __REPOSITORY_NAME__ - the name of the ECR repository to create or pull from  
    __APPLICATION_NAME__ - the name of the image to use during upload  
-   __APPLICATTION_BASE_VERSION__ - a starting version in decimal format of [0-9].[0-9]  
+   __APPLICATION_BASE_VERSION__ - a starting version in decimal format of [0-9].[0-9]  
    > Note the version is auto increased based on what is already uploaded to ECR  
 
 1. Execute script `python3 build-it.py`  
@@ -78,7 +78,7 @@ Then
 # Result
 Now you have:  
 * An organized folder list of items to customize with  
-* An simple input file to customize the image with  
+* A simple input file to customize the image with  
 * The ability to create and improve while maintaining functional code with GitHub tags  
 * Labels in docker files that provide any required detail and updates to changes  
 * The ability to publish tested images into AWS ECR  
