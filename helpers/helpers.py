@@ -13,7 +13,7 @@ class InputHelper:
     __config = configparser.RawConfigParser()
     __parent_image = None
     __selected_items = None
-    __build_directory = None
+    __docker_directory = None
     __aws_profile_name = None
     __aws_repository_name = None
     __application_name = None
@@ -23,7 +23,7 @@ class InputHelper:
         self.__config.read(inputs_file_name)
         self.__parent_image = self.__config.get('image', 'PARENT_NAME')
         self.__selected_items = self.__config.get('image', 'SELECTED_ITEMS')
-        self.__build_directory = self.__config.get('image', 'BUILD_DIRECTORY')
+        self.__docker_directory = self.__config.get('image', 'DOCKER_DIRECTORY')
         self.__aws_profile_name = self.__config.get('repository', 'PROFILE_NAME')
         self.__aws_repository_name = self.__config.get('repository', 'REPOSITORY_NAME')
         self.__application_name = self.__config.get('repository', 'APPLICATION_NAME')
@@ -35,8 +35,8 @@ class InputHelper:
     def get_selected_items(self):
         return self.__selected_items
 
-    def get_build_directory(self):
-        return self.__build_directory
+    def get_docker_directory(self):
+        return self.__docker_directory
 
     def get_aws_profile_name(self):
         return self.__aws_profile_name
@@ -55,13 +55,13 @@ class DockerHelper:
 
     __parent_image = None
     __selected_items = None
-    __build_directory = None
+    __docker_directory = None
 
     def __init__(self, input_helper):
         self.__parent_image = input_helper.get_parent_image()
         self.__selected_items = input_helper.get_selected_items()
-        self.__build_directory = input_helper.get_build_directory()
-        self.__reset_build_folder__(self.__build_directory)
+        self.__docker_directory = input_helper.get_docker_directory()
+        self.__reset_docker_folder__(self.__docker_directory)
 
     def build_docker_file(self):
         selected_items_list = self.__input_to_list__(self.__selected_items)
@@ -84,10 +84,10 @@ class DockerHelper:
                                 else:
                                     sys.exit(f'{file_} has no content.')
                         else:
-                            shutil.copy(file_, f'{self.__build_directory}{os.path.sep}')
+                            shutil.copy(file_, f'{self.__docker_directory}{os.path.sep}')
 
                     if found_docker:
-                        with open(f'{self.__build_directory}{os.path.sep}Dockerfile', 'w') as out_:
+                        with open(f'{self.__docker_directory}{os.path.sep}Dockerfile', 'w') as out_:
                             out_.writelines(new_docker_file)
 
                     else:
@@ -134,7 +134,7 @@ class DockerHelper:
             sys.exit(f'{path_} did not exist.')
 
     @staticmethod
-    def __reset_build_folder__(build_):
+    def __reset_docker_folder__(build_):
         if os.path.exists(build_):
             shutil.rmtree(build_)
 
@@ -152,7 +152,7 @@ class EcrHelper:
     __application_version_base = None
     __application_version_current = None
     __application_version_next = None
-    __build_directory = None
+    __docker_directory = None
     __registry_build = None
     __image_tag = None
 
@@ -160,7 +160,7 @@ class EcrHelper:
         self.__session = boto3.Session(profile_name=input_helper.get_aws_profile_name())
         self.__repository_name = input_helper.get_aws_repository_name()
         self.__application_name = input_helper.get_application_name()
-        self.__build_directory = input_helper.get_build_directory()
+        self.__docker_directory = input_helper.get_docker_directory()
         self.__application_version_base = round(float(input_helper.get_application_base_version()), 4)
         self.__application_version_current = round(float(input_helper.get_application_base_version()), 4)
         self.get_create_repository()
@@ -253,7 +253,7 @@ class EcrHelper:
         self.__image_tag = f'{self.__repository_uri}:{self.__application_name}-{self.__application_version_next}'
         logging.warning(f'Building image...{self.__image_tag}')
         self.__registry_build = self.__docker_env.images.build(
-            path=self.__build_directory,
+            path=self.__docker_directory,
             tag=self.__image_tag,
             labels={'Application': self.__application_name,
                     'ApplicationVersion': f'{round(self.__application_version_next, 4)}'}
