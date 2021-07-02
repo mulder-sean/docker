@@ -1,0 +1,1 @@
+LABEL description="openldap placeholder"
